@@ -63,6 +63,7 @@ Basic libraries and headers needed to cross-compile Windows applications
 
 %prep
 %autosetup -p1 -n mingw-w64-v%{version}
+%config_update
 
 %if %{with bootstrap}
 # In bootstrap mode, we only care about headers
