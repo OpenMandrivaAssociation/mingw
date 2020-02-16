@@ -7,9 +7,11 @@ Group: Development/Tools
 Url: http://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
 Patch0: widl-aarch64-buildfix.patch
+Patch1: widl-riscv-buildfix.patch
 Summary: Headers and libraries needed to compile Windows applications on Linux
 License: Zope Public License
 BuildRequires: make
+BuildRequires: libtool-base
 %if ! %{with bootstrap}
 BuildRequires: cross-i686-w32-mingw32-gcc-bootstrap
 BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
@@ -63,7 +65,9 @@ Basic libraries and headers needed to cross-compile Windows applications
 
 %prep
 %autosetup -p1 -n mingw-w64-v%{version}
-%config_update
+find . -name config.guess -o -name config.sub |while read r; do
+	cp -f %{_datadir}/libtool/config/$(basename $r) $r
+done
 
 %if %{with bootstrap}
 # In bootstrap mode, we only care about headers
