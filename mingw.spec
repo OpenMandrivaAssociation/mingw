@@ -9,6 +9,17 @@ Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-
 Summary: Headers and libraries needed to compile Windows applications on Linux
 License: Zope Public License
 BuildRequires: make
+%if ! %{with bootstrap}
+BuildRequires: cross-i686-w32-mingw32-gcc-bootstrap
+BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
+%endif
+%if %{with bootstrap}
+Recommends: cross-i686-w32-mingw32-libc-bootstrap
+Recommends: cross-x86_64-w64-mingw32-libc-bootstrap
+%else
+Recommends: cross-i686-w32-mingw32-libc
+Recommends: cross-x86_64-w64-mingw32-libc
+%endif
 
 %description
 Headers and libraries needed to compile Windows applications on Linux
@@ -58,9 +69,56 @@ cd mingw-w64-headers
 %endif
 
 for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+%if ! %{with bootstrap}
+	# For some reason the configure script doesn't
+	# automatically use the correct cross tools
+	export CC=${i}-gcc
+	export CXX=${i}-g++
+	export AS=${i}-as
+	export AR=${i}-ar
+	export RANLIB=${i}-ranlib
+	export DLLTOOL=${i}-dlltool
+%endif
 	mkdir obj-${i}
 	cd obj-${i}
-	../configure --prefix=%{_prefix}/${i} --target=${i}
+	../configure --prefix=%{_prefix}/${i} --target=${i} --enable-experimental=all
+	cd ..
+%if ! %{with bootstrap}
+	unset CC
+	unset CXX
+	unset AS
+	unset AR
+	unset RANLIB
+	unset DLLTOOL
+%endif
+done
+
+%if %{with bootstrap}
+cd ..
+%endif
+
+# We need to build tools separately because
+# we want them to be native Linux binaries,
+# not using the cross compilers.
+# Also, except for widl, there's no difference
+# between 32-bit and 64-bit targets for those tools,
+# eliminating the need for separate i686-w32-mingw32 and
+# x86_64-w64-mingw32 builds
+cd mingw-w64-tools
+for i in *; do
+	[ -e "$i/configure" ] || continue
+	[ "$i" = "widl" ] && continue
+	cd $i
+	mkdir obj
+	cd obj
+	../configure --prefix=%{_prefix}
+	cd ../..
+done
+cd widl
+for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+	mkdir obj-${i}
+	cd obj-${i}
+	../configure --prefix=%{_prefix} --target=${i}
 	cd ..
 done
 
@@ -69,6 +127,32 @@ done
 # In bootstrap mode, we only care about headers
 cd mingw-w64-headers
 %endif
+for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+	cd obj-${i}
+	%make_build -j1
+	cd ..
+done
+
+%if %{with bootstrap}
+cd ..
+%endif
+
+# We need to build tools separately because
+# we want them to be native Linux binaries,
+# not using the cross compilers.
+# Also, there's no difference between 32-bit
+# and 64-bit targets for those tools, eliminating
+# the need for separate i686-w32-mingw32 and
+# x86_64-w64-mingw32 targets
+cd mingw-w64-tools
+for i in *; do
+	[ -e "$i/configure" ] || continue
+	[ "$i" = "widl" ] && continue
+	cd $i/obj
+	%make_build
+	cd ../..
+done
+cd widl
 for i in i686-w32-mingw32 x86_64-w64-mingw32; do
 	cd obj-${i}
 	%make_build
@@ -86,12 +170,40 @@ for i in i686-w32-mingw32 x86_64-w64-mingw32; do
 	cd ..
 done
 
+%if %{with bootstrap}
+cd ..
+%endif
+
+# We need to build tools separately because
+# we want them to be native Linux binaries,
+# not using the cross compilers.
+# Also, there's no difference between 32-bit
+# and 64-bit targets for those tools, eliminating
+# the need for separate i686-w32-mingw32 and
+# x86_64-w64-mingw32 targets
+cd mingw-w64-tools
+for i in *; do
+	[ -e "$i/configure" ] || continue
+	[ "$i" = "widl" ] && continue
+	cd $i/obj
+	%make_install
+	cd ../..
+done
+cd widl
+for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+	cd obj-${i}
+	%make_install
+	cd ..
+done
+
 %files
+%{_bindir}/*
 
 %if %{with bootstrap}
 %files -n cross-i686-w32-mingw32-libc-bootstrap
 %else
 %files -n cross-i686-w32-mingw32-libc
+%{_prefix}/i686-w32-mingw32/lib32
 %endif
 %{_prefix}/i686-w32-mingw32/include/*
 
@@ -99,5 +211,7 @@ done
 %files -n cross-x86_64-w64-mingw32-libc-bootstrap
 %else
 %files -n cross-x86_64-w64-mingw32-libc
+%{_prefix}/x86_64-w64-mingw32/lib/*
+%{_prefix}/x86_64-w64-mingw32/lib32
 %endif
 %{_prefix}/x86_64-w64-mingw32/include/*
