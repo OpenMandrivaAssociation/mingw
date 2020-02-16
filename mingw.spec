@@ -6,6 +6,7 @@ Release: 1
 Group: Development/Tools
 Url: http://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
+Patch0: widl-aarch64-buildfix.patch
 Summary: Headers and libraries needed to compile Windows applications on Linux
 License: Zope Public License
 BuildRequires: make
