@@ -89,7 +89,17 @@ for i in i686-w32-mingw32 x86_64-w64-mingw32; do
 %endif
 	mkdir obj-${i}
 	cd obj-${i}
-	../configure --prefix=%{_prefix}/${i} --target=${i} --enable-experimental=all
+	if ! ../configure --prefix=%{_prefix}/${i} --target=${i} --enable-experimental=all; then
+		echo "Configure failed:"
+		echo "================="
+		for cl in `find . -name config.log`; do
+			[ -e "$cl" ] || continue
+			echo "*** $cl:"
+			cat $cl
+			echo
+		done
+		exit 1
+	fi
 	cd ..
 %if ! %{with bootstrap}
 	unset CC
