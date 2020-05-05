@@ -13,6 +13,8 @@ License: Zope Public License
 BuildRequires: make
 BuildRequires: libtool-base
 %if ! %{with bootstrap}
+BuildRequires: cross-i686-w32-mingw32-binutils
+BuildRequires: cross-x86_64-w64-mingw32-binutils
 BuildRequires: cross-i686-w32-mingw32-gcc-bootstrap
 BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
 BuildRequires: cross-i686-w32-mingw32-libc-bootstrap
