@@ -15,6 +15,8 @@ BuildRequires: libtool-base
 %if ! %{with bootstrap}
 BuildRequires: cross-i686-w32-mingw32-gcc-bootstrap
 BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
+BuildRequires: cross-i686-w32-mingw32-libc-bootstrap
+BuildRequires: cross-x86_64-w64-mingw32-libc-bootstrap
 %endif
 %if %{with bootstrap}
 Recommends: cross-i686-w32-mingw32-libc-bootstrap
