@@ -16,16 +16,28 @@ BuildRequires: libtool-base
 BuildRequires: cross-i686-w32-mingw32-binutils
 BuildRequires: cross-i686-w32-mingw32-gcc-bootstrap
 BuildRequires: cross-i686-w32-mingw32-libc-bootstrap
+%ifnarch %{ix86}
+# FIXME need to figure out why i686->x86_64 crosscompilers
+# aren't working
 BuildRequires: cross-x86_64-w64-mingw32-binutils
 BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
 BuildRequires: cross-x86_64-w64-mingw32-libc-bootstrap
 %endif
+%endif
 %if %{with bootstrap}
 Recommends: cross-i686-w32-mingw32-libc-bootstrap
+%ifnarch %{ix86}
+# FIXME need to figure out why i686->x86_64 crosscompilers
+# aren't working
 Recommends: cross-x86_64-w64-mingw32-libc-bootstrap
+%endif
 %else
 Recommends: cross-i686-w32-mingw32-libc
+%ifnarch %{ix86}
+# FIXME need to figure out why i686->x86_64 crosscompilers
+# aren't working
 Recommends: cross-x86_64-w64-mingw32-libc
+%endif
 %endif
 
 %description
@@ -69,6 +81,14 @@ Basic libraries and headers needed to cross-compile Windows applications
 
 %prep
 %autosetup -p1 -n mingw-w64-v%{version}
+%ifnarch %{ix86}
+# FIXME need to figure out why i686->x86_64 crosscompilers
+# aren't working
+TARGETS=i686-w32-mingw32
+%else
+TARGETS="i686-w32-mingw32 x86_64-w64-mingw32"
+%endif
+
 find . -name config.guess -o -name config.sub |while read r; do
 	cp -f %{_datadir}/libtool/config/$(basename $r) $r
 done
@@ -78,7 +98,7 @@ done
 cd mingw-w64-headers
 %endif
 
-for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+for i in $TARGETS; do
 %if ! %{with bootstrap}
 	# For some reason the configure script doesn't
 	# automatically use the correct cross tools
@@ -135,7 +155,7 @@ for i in *; do
 	cd ../..
 done
 cd widl
-for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+for i in $TARGETS; do
 	mkdir obj-${i}
 	cd obj-${i}
 	../configure --prefix=%{_prefix} --target=${i}
@@ -143,11 +163,19 @@ for i in i686-w32-mingw32 x86_64-w64-mingw32; do
 done
 
 %build
+%ifnarch %{ix86}
+# FIXME need to figure out why i686->x86_64 crosscompilers
+# aren't working
+TARGETS=i686-w32-mingw32
+%else
+TARGETS="i686-w32-mingw32 x86_64-w64-mingw32"
+%endif
+
 %if %{with bootstrap}
 # In bootstrap mode, we only care about headers
 cd mingw-w64-headers
 %endif
-for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+for i in $TARGETS; do
 	cd obj-${i}
 	%make_build -j1
 	cd ..
@@ -173,18 +201,26 @@ for i in *; do
 	cd ../..
 done
 cd widl
-for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+for i in $TARGETS; do
 	cd obj-${i}
 	%make_build
 	cd ..
 done
 
 %install
+%ifnarch %{ix86}
+# FIXME need to figure out why i686->x86_64 crosscompilers
+# aren't working
+TARGETS=i686-w32-mingw32
+%else
+TARGETS="i686-w32-mingw32 x86_64-w64-mingw32"
+%endif
+
 %if %{with bootstrap}
 # In bootstrap mode, we only care about headers
 cd mingw-w64-headers
 %endif
-for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+for i in $TARGETS; do
 	cd obj-${i}
 	%make_install
 	cd ..
@@ -210,7 +246,7 @@ for i in *; do
 	cd ../..
 done
 cd widl
-for i in i686-w32-mingw32 x86_64-w64-mingw32; do
+for i in $TARGETS; do
 	cd obj-${i}
 	%make_install
 	cd ..
@@ -227,6 +263,9 @@ done
 %endif
 %{_prefix}/i686-w32-mingw32/include/*
 
+%ifnarch %{ix86}
+# FIXME need to figure out why i686->x86_64 crosscompilers
+# aren't working
 %if %{with bootstrap}
 %files -n cross-x86_64-w64-mingw32-libc-bootstrap
 %else
@@ -235,3 +274,4 @@ done
 %{_prefix}/x86_64-w64-mingw32/lib32
 %endif
 %{_prefix}/x86_64-w64-mingw32/include/*
+%endif
