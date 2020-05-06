@@ -2,7 +2,7 @@
 
 Name: mingw
 Version: 7.0.0
-Release: 2
+Release: 3
 Group: Development/Tools
 Url: http://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
@@ -14,10 +14,10 @@ BuildRequires: make
 BuildRequires: libtool-base
 %if ! %{with bootstrap}
 BuildRequires: cross-i686-w32-mingw32-binutils
-BuildRequires: cross-x86_64-w64-mingw32-binutils
 BuildRequires: cross-i686-w32-mingw32-gcc-bootstrap
-BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
 BuildRequires: cross-i686-w32-mingw32-libc-bootstrap
+BuildRequires: cross-x86_64-w64-mingw32-binutils
+BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
 BuildRequires: cross-x86_64-w64-mingw32-libc-bootstrap
 %endif
 %if %{with bootstrap}
@@ -216,6 +216,10 @@ for i in i686-w32-mingw32 x86_64-w64-mingw32; do
 	cd ..
 done
 
+# Fix install locations
+mv %{buildroot}%{_prefix}/i686-w32-mingw32/lib32 %{buildroot}%{_prefix}/i686-w32-mingw32/lib
+ln -s lib %{buildroot}%{_prefix}/i686-w32-mingw32/lib32
+
 %files
 %{_bindir}/*
 
@@ -223,6 +227,7 @@ done
 %files -n cross-i686-w32-mingw32-libc-bootstrap
 %else
 %files -n cross-i686-w32-mingw32-libc
+%{_prefix}/i686-w32-mingw32/lib/*
 %{_prefix}/i686-w32-mingw32/lib32
 %endif
 %{_prefix}/i686-w32-mingw32/include/*
