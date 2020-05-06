@@ -2,7 +2,7 @@
 
 Name: mingw
 Version: 7.0.0
-Release: 3
+Release: 4
 Group: Development/Tools
 Url: http://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
@@ -91,7 +91,7 @@ for i in i686-w32-mingw32 x86_64-w64-mingw32; do
 %endif
 	mkdir obj-${i}
 	cd obj-${i}
-	if ! ../configure --prefix=%{_prefix}/${i} --target=${i} --enable-experimental=all; then
+	if ! ../configure --prefix=%{_prefix}/${i} --target=${i} --host=${i} --enable-experimental=all; then
 		echo "Configure failed:"
 		echo "================="
 		for cl in `find . -name config.log`; do
@@ -216,10 +216,6 @@ for i in i686-w32-mingw32 x86_64-w64-mingw32; do
 	cd ..
 done
 
-# Fix install locations
-mv %{buildroot}%{_prefix}/i686-w32-mingw32/lib32 %{buildroot}%{_prefix}/i686-w32-mingw32/lib
-ln -s lib %{buildroot}%{_prefix}/i686-w32-mingw32/lib32
-
 %files
 %{_bindir}/*
 
@@ -228,7 +224,6 @@ ln -s lib %{buildroot}%{_prefix}/i686-w32-mingw32/lib32
 %else
 %files -n cross-i686-w32-mingw32-libc
 %{_prefix}/i686-w32-mingw32/lib/*
-%{_prefix}/i686-w32-mingw32/lib32
 %endif
 %{_prefix}/i686-w32-mingw32/include/*
 
