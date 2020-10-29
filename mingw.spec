@@ -1,8 +1,8 @@
-%bcond_with bootstrap
+%bcond_without bootstrap
 
 Name: mingw
-Version: 7.0.0
-Release: 6
+Version: 8.0.0
+Release: 1
 Group: Development/Tools
 Url: http://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
