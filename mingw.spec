@@ -1,4 +1,5 @@
 %bcond_with bootstrap
+%global optflags %{optflags} -fcommon
 
 Name: mingw
 Version: 8.0.0
