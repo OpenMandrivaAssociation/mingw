@@ -14,13 +14,13 @@ BuildRequires: libtool-base
 %if ! %{with bootstrap}
 BuildRequires: cross-i686-w64-mingw32-binutils
 BuildRequires: cross-i686-w64-mingw32-gcc-bootstrap
-BuildRequires: cross-i686-w64-mingw32-libc-bootstrap
+BuildRequires: cross-i686-w64-mingw32-libc-bootstrap >= 9.0.0-1
 %ifnarch %{ix86}
 # FIXME need to figure out why i686->x86_64 crosscompilers
 # aren't working
 BuildRequires: cross-x86_64-w64-mingw32-binutils
 BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
-BuildRequires: cross-x86_64-w64-mingw32-libc-bootstrap
+BuildRequires: cross-x86_64-w64-mingw32-libc-bootstrap >= 9.0.0-1
 %endif
 %endif
 %if %{with bootstrap}
