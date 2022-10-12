@@ -1,8 +1,8 @@
-%bcond_with bootstrap
+%bcond_without bootstrap
 
 Name: mingw
-Version: 9.0.0
-Release: 2
+Version: 10.0.0
+Release: 1
 Group: Development/Tools
 Url: http://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
