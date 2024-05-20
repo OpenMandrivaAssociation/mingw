@@ -2,7 +2,7 @@
 
 Name: mingw
 Version: 11.0.0
-Release: 2
+Release: 3
 Group: Development/Tools
 Url: http://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
@@ -111,7 +111,7 @@ for i in $TARGETS; do
 %endif
 	mkdir obj-${i}
 	cd obj-${i}
-	if ! ../configure --prefix=%{_prefix}/${i} --target=${i} --host=${i} --enable-experimental=all; then
+	if ! ../configure --prefix=%{_prefix}/${i} --target=${i} --host=${i} --enable-experimental=all --with-libraries=all; then
 		echo "Configure failed:"
 		echo "================="
 		for cl in `find . -name config.log`; do
@@ -260,6 +260,7 @@ done
 %else
 %files -n cross-i686-w64-mingw32-libc
 %{_prefix}/i686-w64-mingw32/lib/*
+%{_prefix}/i686-w64-mingw32/bin/libwinpthread-1.dll
 %endif
 %{_prefix}/i686-w64-mingw32/include/*
 
@@ -271,6 +272,7 @@ done
 %else
 %files -n cross-x86_64-w64-mingw32-libc
 %{_prefix}/x86_64-w64-mingw32/lib/*
+%{_prefix}/x86_64-w64-mingw32/bin/libwinpthread-1.dll
 %{_prefix}/x86_64-w64-mingw32/lib32
 %endif
 %{_prefix}/x86_64-w64-mingw32/include/*
