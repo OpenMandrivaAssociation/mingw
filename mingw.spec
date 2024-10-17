@@ -4,7 +4,7 @@ Name: mingw
 Version: 11.0.0
 Release: 3
 Group: Development/Tools
-Url: http://mingw-w64.org/
+Url: https://mingw-w64.org/
 Source0: https://netix.dl.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v%{version}.tar.bz2
 Patch0: mingw-fix-apparent-typos.patch
 Patch1: widl-riscv-buildfix.patch
