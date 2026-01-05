@@ -20,7 +20,7 @@ BuildRequires: cross-i686-w64-mingw32-gcc-bootstrap
 %if ! %{without libraries}
 BuildRequires: cross-i686-w64-mingw32-libc
 %else
-BuildRequires: cross-i686-w64-mingw32-libc-bootstrap >= %{version}-%{release}
+BuildRequires: cross-i686-w64-mingw32-libc-bootstrap >= 13.0.0-1
 %endif
 %ifnarch %{ix86}
 # FIXME need to figure out why i686->x86_64 crosscompilers
@@ -30,7 +30,7 @@ BuildRequires: cross-x86_64-w64-mingw32-gcc-bootstrap
 %if ! %{without libraries}
 BuildRequires: cross-x86_64-w64-mingw32-libc
 %else
-BuildRequires: cross-x86_64-w64-mingw32-libc-bootstrap >= %{version}-%{release}
+BuildRequires: cross-x86_64-w64-mingw32-libc-bootstrap >= 13.0.0-1
 %endif
 %endif
 %endif
