@@ -3,6 +3,9 @@
 # to only build libc, a requirement to build other libraries
 %bcond_without libraries
 
+# d-m: this hogs the builders for a hour+ and is useless
+%global dont_fix_lto_intermediates_in_static_libraries 1
+
 Name: mingw
 Version: 13.0.0
 Release: 3
